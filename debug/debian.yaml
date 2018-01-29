@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: debian
+  namespace: monitoring
+  labels:
+    app: debian
+    component: core
+spec:
+  selector:
+    matchLabels:
+      app: debian
+      component: core
+  serviceName: "debian"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      name: debian-main
+      labels:
+        app: debian
+        component: core
+    spec:
+      serviceAccountName: debian-k8s
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: debian
+        image: debian
+        volumeMounts:
+        - name: niiinja-data
+          mountPath: /niiinja-data
+      volumes:
+      - name: niiinja-data
+        persistentVolumeClaim:
+          claimName: niiinja-data
+  volumeClaimTemplates:
+  - metadata:
+      name: niiinja-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 500Gi

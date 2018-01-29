@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta2
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: prometheus-core
   namespace: monitoring
@@ -7,14 +7,7 @@ metadata:
     app: prometheus
     component: core
 spec:
-  selector:
-    matchLabels:
-      app: prometheus
-      component: core
-  serviceName: "prometheus"
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   template:
     metadata:
       name: prometheus-main
@@ -23,16 +16,14 @@ spec:
         component: core
     spec:
       serviceAccountName: prometheus-k8s
-      terminationGracePeriodSeconds: 10
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 2000
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.1.0
+        image: prom/prometheus:v1.7.0
         args:
-          - '--storage.tsdb.retention=8760h'
-          - '--config.file=/etc/prometheus/prometheus.yaml'
+          - '-storage.local.retention=8760h'
+          - '-storage.local.memory-chunks=500000'
+          - '-config.file=/etc/prometheus/prometheus.yaml'
+          - '-alertmanager.url=http://alertmanager:9093/'
         ports:
         - name: webui
           containerPort: 9090
@@ -48,9 +39,6 @@ spec:
           mountPath: /etc/prometheus
         - name: rules-volume
           mountPath: /etc/prometheus-rules
-        - name: niiinja-data
-          mountPath: /prometheus/data
-          subPath: prometheus-data
       volumes:
       - name: config-volume
         configMap:
@@ -58,14 +46,3 @@ spec:
       - name: rules-volume
         configMap:
           name: prometheus-rules
-      - name: niiinja-data
-        persistentVolumeClaim:
-          claimName: niiinja-data
-  volumeClaimTemplates:
-  - metadata:
-      name: niiinja-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 300Gi
