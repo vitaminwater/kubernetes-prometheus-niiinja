@@ -210,6 +210,7 @@ metadata:
   creationTimestamp: null
   name: alertmanager-templates
   namespace: monitoring
+  namespace: monitoring
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -2249,6 +2250,7 @@ metadata:
   creationTimestamp: null
   name: grafana-import-dashboards
   namespace: monitoring
+  namespace: monitoring
 ---
 apiVersion: batch/v1
 kind: Job
@@ -2460,6 +2462,7 @@ metadata:
   creationTimestamp: null
   name: prometheus-core
   namespace: monitoring
+  namespace: monitoring
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -2516,7 +2519,7 @@ metadata:
   name: kube-state-metrics
   namespace: monitoring
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -2779,9 +2782,10 @@ metadata:
   creationTimestamp: null
   name: prometheus-rules
   namespace: monitoring
+  namespace: monitoring
 ---
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: prometheus
@@ -2794,7 +2798,7 @@ subjects:
   name: prometheus-k8s
   namespace: monitoring
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: prometheus

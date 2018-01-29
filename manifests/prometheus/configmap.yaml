@@ -109,3 +109,4 @@ metadata:
   creationTimestamp: null
   name: prometheus-core
   namespace: monitoring
+  namespace: monitoring

@@ -69,3 +69,4 @@ metadata:
   creationTimestamp: null
   name: prometheus-rules
   namespace: monitoring
+  namespace: monitoring
