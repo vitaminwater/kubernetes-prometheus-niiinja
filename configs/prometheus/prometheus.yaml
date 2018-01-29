@@ -4,6 +4,11 @@ global:
   evaluation_interval: 10s
 rule_files:
   - "/etc/prometheus-rules/*.rules"
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
 scrape_configs:
 
   # https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml#L37
